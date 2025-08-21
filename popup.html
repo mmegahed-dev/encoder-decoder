@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>atob or btoa 😄</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="container">
+        <h1>atob or btoa 😄</h1>
+        
+        <div class="mode-toggle">
+            <button id="encode-mode" class="mode-btn">Encode</button>
+            <button id="decode-mode" class="mode-btn active">Decode</button>
+        </div>
+        
+        <div class="input-section">
+            <label for="input-text" id="input-label">Enter Text to Decode:</label>
+            <textarea id="input-text" placeholder="Paste your text here..."></textarea>
+        </div>
+        
+        <div class="button-section">
+            <button id="process-btn">Process</button>
+            <button id="clear-btn">Clear</button>
+        </div>
+        
+        <div class="output-section">
+            <label for="output-text" id="output-label">Result:</label>
+            <textarea id="output-text" readonly placeholder="Result will appear here..."></textarea>
+        </div>
+        
+        <div class="status" id="status"></div>
+    </div>
+    
+    <script src="popup.js"></script>
+</body>
+</html>

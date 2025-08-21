@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base64 Decoder Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-case {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .input {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 3px;
+            font-family: monospace;
+            word-break: break-all;
+        }
+        .output {
+            background: #e8f5e8;
+            padding: 10px;
+            border-radius: 3px;
+            font-family: monospace;
+            word-break: break-all;
+        }
+        .error {
+            background: #ffe8e8;
+            color: #c00;
+        }
+    </style>
+</head>
+<body>
+    <h1>Base64 Decoder Test Cases</h1>
+    <p>This page demonstrates the base64 decoding functionality that will be used in the Chrome extension.</p>
+    
+    <div id="test-results"></div>
+
+    <script>
+        function testDecode(input, expected) {
+            try {
+                const decoded = atob(input.trim());
+                const success = decoded === expected;
+                return {
+                    success,
+                    result: decoded,
+                    error: null
+                };
+            } catch (error) {
+                return {
+                    success: false,
+                    result: null,
+                    error: error.message
+                };
+            }
+        }
+
+        const testCases = [
+            {
+                name: "Simple Text",
+                input: "SGVsbG8gV29ybGQ=",
+                expected: "Hello World"
+            },
+            {
+                name: "URL",
+                input: "aHR0cHM6Ly93d3cuZ29vZ2xlLmNvbQ==",
+                expected: "https://www.google.com"
+            },
+            {
+                name: "JSON Data",
+                input: "eyJuYW1lIjogIkpvaG4iLCAiYWdlIjogMzB9",
+                expected: '{"name": "John", "age": 30}'
+            },
+            {
+                name: "Empty String",
+                input: "",
+                expected: ""
+            },
+            {
+                name: "Invalid Base64",
+                input: "invalid-base64!@#",
+                expected: null
+            }
+        ];
+
+        const resultsDiv = document.getElementById('test-results');
+        
+        testCases.forEach(testCase => {
+            const testDiv = document.createElement('div');
+            testDiv.className = 'test-case';
+            
+            const result = testDecode(testCase.input, testCase.expected);
+            
+            testDiv.innerHTML = `
+                <h3>${testCase.name}</h3>
+                <p><strong>Input:</strong></p>
+                <div class="input">${testCase.input || '(empty)'}</div>
+                <p><strong>Expected:</strong></p>
+                <div class="output">${testCase.expected || '(error expected)'}</div>
+                <p><strong>Result:</strong></p>
+                <div class="${result.success ? 'output' : 'error'}">
+                    ${result.error || result.result || '(empty)'}
+                </div>
+                <p><strong>Status:</strong> ${result.success ? '✅ PASS' : '❌ FAIL'}</p>
+            `;
+            
+            resultsDiv.appendChild(testDiv);
+        });
+
+        // Test the actual extension logic
+        function decodeBase64(input) {
+            try {
+                const cleanInput = input.trim().replace(/\s/g, '');
+                
+                if (!cleanInput) {
+                    throw new Error('Please enter a base64 encoded value');
+                }
+
+                const decoded = atob(cleanInput);
+                return decoded;
+            } catch (error) {
+                throw new Error('Invalid base64 encoded value. Please check your input.');
+            }
+        }
+
+        console.log('Extension decodeBase64 function test:');
+        console.log('Test 1:', decodeBase64('SGVsbG8gV29ybGQ=')); // Should return "Hello World"
+        console.log('Test 2:', decodeBase64('')); // Should throw error
+        console.log('Test 3:', decodeBase64('invalid')); // Should throw error
+    </script>
+</body>
+</html>

@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Extension ZIP</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        button { padding: 15px 30px; margin: 10px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; }
+        .status { margin: 20px 0; padding: 15px; border-radius: 8px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>Create Extension ZIP for Google Web Store</h1>
+    
+    <div id="status"></div>
+    
+    <button onclick="createZip()">Create Extension ZIP</button>
+    
+    <div id="fileList"></div>
+
+    <script>
+        async function createZip() {
+            const status = document.getElementById('status');
+            const fileList = document.getElementById('fileList');
+            
+            status.innerHTML = '<div class="status">Creating ZIP file...</div>';
+            
+            try {
+                const zip = new JSZip();
+                
+                // Add manifest.json
+                const manifestContent = `{
+  "manifest_version": 3,
+  "name": "atob or btoa 😄",
+  "version": "1.0",
+  "description": "A simple Chrome extension to decode base64 encoded values",
+  "permissions": ["activeTab"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "atob or btoa 😄"
+  }
+}`;
+                
+                zip.file("manifest.json", manifestContent);
+                
+                // Add popup.html
+                const popupHtmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>atob or btoa 😄</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="container">
+        <h1>atob or btoa 😄</h1>
+        
+        <div class="mode-toggle">
+            <button id="encode-mode" class="mode-btn">Encode</button>
+            <button id="decode-mode" class="mode-btn active">Decode</button>
+        </div>
+        
+        <div class="input-section">
+            <label for="input-text" id="input-label">Enter Text to Decode:</label>
+            <textarea id="input-text" placeholder="Paste your text here..."></textarea>
+        </div>
+        
+        <div class="button-section">
+            <button id="process-btn">Process</button>
+            <button id="clear-btn">Clear</button>
+        </div>
+        
+        <div class="output-section">
+            <label for="output-text" id="output-label">Result:</label>
+            <textarea id="output-text" readonly placeholder="Result will appear here..."></textarea>
+        </div>
+        
+        <div class="status" id="status"></div>
+    </div>
+    
+    <script src="popup.js"></script>
+</body>
+</html>`;
+                
+                zip.file("popup.html", popupHtmlContent);
+                
+                // Add popup.css
+                const popupCssContent = `* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+}
+
+.container {
+    width: 400px;
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.mode-toggle {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 20px;
+    background: #f8f9fa;
+    padding: 5px;
+    border-radius: 8px;
+}
+
+.mode-btn {
+    flex: 1;
+    padding: 8px 12px;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    background: transparent;
+    color: #666;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mode-btn.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: #667eea;
+}
+
+.mode-btn:hover:not(.active) {
+    background: #e9ecef;
+    color: #333;
+}
+
+.input-section, .output-section {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 12px;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    resize: vertical;
+    transition: border-color 0.3s ease;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+#output-text {
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.button-section {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+button {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#process-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+#process-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+#clear-btn {
+    background: #f8f9fa;
+    color: #666;
+    border: 2px solid #e1e5e9;
+}
+
+#clear-btn:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.status {
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    text-align: center;
+    min-height: 20px;
+}
+
+.status.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.status.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.status.info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}`;
+                
+                zip.file("popup.css", popupCssContent);
+                
+                // Add popup.js
+                const popupJsContent = `document.addEventListener('DOMContentLoaded', function() {
+    const inputText = document.getElementById('input-text');
+    const outputText = document.getElementById('output-text');
+    const processBtn = document.getElementById('process-btn');
+    const clearBtn = document.getElementById('clear-btn');
+    const status = document.getElementById('status');
+    const decodeModeBtn = document.getElementById('decode-mode');
+    const encodeModeBtn = document.getElementById('encode-mode');
+    const inputLabel = document.getElementById('input-label');
+    const outputLabel = document.getElementById('output-label');
+
+    let currentMode = 'decode';
+
+    function showStatus(message, type = 'info') {
+        status.textContent = message;
+        status.className = \`status \${type}\`;
+        setTimeout(() => {
+            status.textContent = '';
+            status.className = 'status';
+        }, 3000);
+    }
+
+    function updateMode(mode) {
+        currentMode = mode;
+        
+        if (mode === 'decode') {
+            decodeModeBtn.classList.add('active');
+            encodeModeBtn.classList.remove('active');
+            inputLabel.textContent = 'Enter Base64 Encoded Value:';
+            outputLabel.textContent = 'Decoded Result:';
+            inputText.placeholder = 'Paste your base64 encoded value here...';
+            outputText.placeholder = 'Decoded result will appear here...';
+        } else {
+            encodeModeBtn.classList.add('active');
+            decodeModeBtn.classList.remove('active');
+            inputLabel.textContent = 'Enter Text to Encode:';
+            outputLabel.textContent = 'Base64 Encoded Result:';
+            inputText.placeholder = 'Paste your text here to encode...';
+            outputText.placeholder = 'Base64 encoded result will appear here...';
+        }
+        
+        inputText.value = '';
+        outputText.value = '';
+    }
+
+    function decodeBase64(input) {
+        try {
+            const cleanInput = input.trim().replace(/\\s/g, '');
+            
+            if (!cleanInput) {
+                throw new Error('Please enter a base64 encoded value');
+            }
+
+            const decoded = atob(cleanInput);
+            return decoded;
+        } catch (error) {
+            throw new Error('Invalid base64 encoded value. Please check your input.');
+        }
+    }
+
+    function encodeBase64(input) {
+        try {
+            const text = input.trim();
+            
+            if (!text) {
+                throw new Error('Please enter text to encode');
+            }
+
+            const encoded = btoa(text);
+            return encoded;
+        } catch (error) {
+            throw new Error('Error encoding text. Please check your input.');
+        }
+    }
+
+    processBtn.addEventListener('click', function() {
+        const input = inputText.value;
+        
+        try {
+            let result;
+            if (currentMode === 'decode') {
+                result = decodeBase64(input);
+                showStatus('Successfully decoded!', 'success');
+            } else {
+                result = encodeBase64(input);
+                showStatus('Successfully encoded!', 'success');
+            }
+            outputText.value = result;
+        } catch (error) {
+            showStatus(error.message, 'error');
+            outputText.value = '';
+        }
+    });
+
+    decodeModeBtn.addEventListener('click', function() {
+        updateMode('decode');
+        showStatus('Switched to decode mode (atob)', 'info');
+    });
+
+    encodeModeBtn.addEventListener('click', function() {
+        updateMode('encode');
+        showStatus('Switched to encode mode (btoa)', 'info');
+    });
+
+    clearBtn.addEventListener('click', function() {
+        inputText.value = '';
+        outputText.value = '';
+        showStatus('Cleared all fields', 'info');
+    });
+
+    inputText.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && e.ctrlKey) {
+            e.preventDefault();
+            processBtn.click();
+        }
+    });
+
+    inputText.addEventListener('paste', function(e) {
+        setTimeout(() => {
+            const input = inputText.value;
+            if (input.trim()) {
+                try {
+                    let result;
+                    if (currentMode === 'decode') {
+                        result = decodeBase64(input);
+                        showStatus('Auto-decoded on paste!', 'success');
+                    } else {
+                        result = encodeBase64(input);
+                        showStatus('Auto-encoded on paste!', 'success');
+                    }
+                    outputText.value = result;
+                } catch (error) {
+                    // Don't show error for auto-process
+                }
+            }
+        }, 100);
+    });
+
+    outputText.addEventListener('click', function() {
+        if (outputText.value) {
+            outputText.select();
+            document.execCommand('copy');
+            showStatus('Copied to clipboard!', 'success');
+        }
+    });
+
+    updateMode('decode');
+    showStatus('Ready! Switch between decode (atob) and encode (btoa) modes', 'info');
+});`;
+                
+                zip.file("popup.js", popupJsContent);
+                
+                // Generate the ZIP file
+                const content = await zip.generateAsync({type: "blob"});
+                
+                // Create download link
+                const url = URL.createObjectURL(content);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'atob-or-btoa-extension.zip';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                status.innerHTML = '<div class="status success">✅ ZIP file created successfully!<br>File: atob-or-btoa-extension.zip</div>';
+                
+                // Show file list
+                fileList.innerHTML = '<h3>Files included in ZIP:</h3><ul><li>manifest.json</li><li>popup.html</li><li>popup.css</li><li>popup.js</li></ul>';
+                
+            } catch (error) {
+                status.innerHTML = '<div class="status error">❌ Error creating ZIP file: ' + error.message + '</div>';
+            }
+        }
+    </script>
+</body>
+</html>

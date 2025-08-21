@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate Extension Screenshots</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            text-align: center;
+            background: #f5f5f5;
+        }
+        .screenshot-container {
+            display: inline-block;
+            margin: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .extension-popup {
+            width: 400px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .extension-popup h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        .mode-toggle {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            background: #f8f9fa;
+            padding: 5px;
+            border-radius: 8px;
+        }
+        .mode-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border: 2px solid transparent;
+            border-radius: 6px;
+            background: transparent;
+            color: #666;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .mode-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+        .input-section, .output-section {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+        #output-text {
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .button-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        #process-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        #clear-btn {
+            background: #f8f9fa;
+            color: #666;
+            border: 2px solid #e1e5e9;
+        }
+        .download-btn {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>📸 Generate Extension Screenshots</h1>
+    <p>Click the buttons below to download screenshots in the correct format for Google Web Store</p>
+    
+    <div class="screenshot-container">
+        <h3>Screenshot 1: Decode Mode</h3>
+        <div class="extension-popup" id="screenshot1">
+            <h1>atob or btoa 😄</h1>
+            
+            <div class="mode-toggle">
+                <button class="mode-btn">Encode</button>
+                <button class="mode-btn active">Decode</button>
+            </div>
+            
+            <div class="input-section">
+                <label>Enter Base64 Encoded Value:</label>
+                <textarea placeholder="Paste your base64 encoded value here...">SGVsbG8gV29ybGQ=</textarea>
+            </div>
+            
+            <div class="button-section">
+                <button id="process-btn">Process</button>
+                <button id="clear-btn">Clear</button>
+            </div>
+            
+            <div class="output-section">
+                <label>Decoded Result:</label>
+                <textarea id="output-text" readonly>Hello World</textarea>
+            </div>
+        </div>
+        <button class="download-btn" onclick="downloadScreenshot('screenshot1', 'screenshot1-decode.png')">Download 640x400</button>
+        <button class="download-btn" onclick="downloadScreenshot('screenshot1', 'screenshot1-decode-large.png', 1280, 800)">Download 1280x800</button>
+    </div>
+
+    <div class="screenshot-container">
+        <h3>Screenshot 2: Encode Mode</h3>
+        <div class="extension-popup" id="screenshot2">
+            <h1>atob or btoa 😄</h1>
+            
+            <div class="mode-toggle">
+                <button class="mode-btn active">Encode</button>
+                <button class="mode-btn">Decode</button>
+            </div>
+            
+            <div class="input-section">
+                <label>Enter Text to Encode:</label>
+                <textarea placeholder="Paste your text here to encode...">Hello World</textarea>
+            </div>
+            
+            <div class="button-section">
+                <button id="process-btn">Process</button>
+                <button id="clear-btn">Clear</button>
+            </div>
+            
+            <div class="output-section">
+                <label>Base64 Encoded Result:</label>
+                <textarea id="output-text" readonly>SGVsbG8gV29ybGQ=</textarea>
+            </div>
+        </div>
+        <button class="download-btn" onclick="downloadScreenshot('screenshot2', 'screenshot2-encode.png')">Download 640x400</button>
+        <button class="download-btn" onclick="downloadScreenshot('screenshot2', 'screenshot2-encode-large.png', 1280, 800)">Download 1280x800</button>
+    </div>
+
+    <div class="screenshot-container">
+        <h3>Screenshot 3: Success State</h3>
+        <div class="extension-popup" id="screenshot3">
+            <h1>atob or btoa 😄</h1>
+            
+            <div class="mode-toggle">
+                <button class="mode-btn">Encode</button>
+                <button class="mode-btn active">Decode</button>
+            </div>
+            
+            <div class="input-section">
+                <label>Enter Base64 Encoded Value:</label>
+                <textarea placeholder="Paste your base64 encoded value here...">aHR0cHM6Ly93d3cuZ29vZ2xlLmNvbQ==</textarea>
+            </div>
+            
+            <div class="button-section">
+                <button id="process-btn" style="background: #28a745;">✓ Success!</button>
+                <button id="clear-btn">Clear</button>
+            </div>
+            
+            <div class="output-section">
+                <label>Decoded Result:</label>
+                <textarea id="output-text" readonly style="background: #d4edda; border-color: #c3e6cb;">https://www.google.com</textarea>
+            </div>
+        </div>
+        <button class="download-btn" onclick="downloadScreenshot('screenshot3', 'screenshot3-success.png')">Download 640x400</button>
+        <button class="download-btn" onclick="downloadScreenshot('screenshot3', 'screenshot3-success-large.png', 1280, 800)">Download 1280x800</button>
+    </div>
+
+    <script>
+        function downloadScreenshot(elementId, filename, width = 640, height = 400) {
+            const element = document.getElementById(elementId);
+            
+            // Create a canvas with the desired dimensions
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = width;
+            canvas.height = height;
+            
+            // Fill with white background
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, width, height);
+            
+            // Calculate scaling to fit the popup
+            const popupWidth = 440; // 400px + 40px padding
+            const popupHeight = 400; // approximate height
+            const scale = Math.min(width / popupWidth, height / popupHeight) * 0.8;
+            
+            // Center the popup
+            const offsetX = (width - popupWidth * scale) / 2;
+            const offsetY = (height - popupHeight * scale) / 2;
+            
+            // Use html2canvas to capture the element
+            html2canvas(element, {
+                scale: scale,
+                backgroundColor: null,
+                width: popupWidth,
+                height: popupHeight
+            }).then(canvas => {
+                // Create final canvas
+                const finalCanvas = document.createElement('canvas');
+                const finalCtx = finalCanvas.getContext('2d');
+                finalCanvas.width = width;
+                finalCanvas.height = height;
+                
+                // Fill with gradient background
+                const gradient = finalCtx.createLinearGradient(0, 0, width, height);
+                gradient.addColorStop(0, '#667eea');
+                gradient.addColorStop(1, '#764ba2');
+                finalCtx.fillStyle = gradient;
+                finalCtx.fillRect(0, 0, width, height);
+                
+                // Draw the popup
+                finalCtx.drawImage(canvas, offsetX, offsetY);
+                
+                // Download
+                const link = document.createElement('a');
+                link.download = filename;
+                link.href = finalCanvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+    </script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</body>
+</html>
